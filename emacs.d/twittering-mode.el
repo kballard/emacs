@@ -1103,12 +1103,18 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
   (let ((start-pos pos)
 	(end-pos))
     (catch 'not-found
-      (while (eq (get-text-property start-pos 'face) twittering-username-face)
-	(setq start-pos (1- start-pos))
-	(when (or (eq start-pos nil) (eq start-pos 0)) (throw 'not-found nil)))
-      (setq start-pos (1+ start-pos))
-      (setq end-pos (next-single-property-change pos 'face))
-      (buffer-substring start-pos end-pos))))
+      (flet ((test () (let ((prop (get-text-property start-pos 'face)))
+			(or
+			 (eq prop twittering-username-face)
+			 (eq prop twittering-uri-face)))))
+	(when (not (test)) (throw 'not-found nil))
+	(while (test)
+	  (setq start-pos (1- start-pos))
+	  (when (or (eq start-pos nil) (eq start-pos 0))
+	    (throw 'not-found nil)))
+	(setq start-pos (1+ start-pos))
+	(setq end-pos (next-single-property-change pos 'face))
+	(buffer-substring start-pos end-pos)))))
 
 (defun twittering-get-status-url (username id)
   "Generate status URL."
