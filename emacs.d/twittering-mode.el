@@ -241,6 +241,11 @@
       (define-key km "\C-m" 'twittering-enter)
       (define-key km "\C-c\C-l" 'twittering-update-lambda)
       (define-key km [mouse-1] 'twittering-click)
+			(define-key km [C-return] 'twittering-click)
+			(define-key km [M-return] 'twittering-click)
+			(define-key km [tab] 'twittering-forward-uri)
+			(define-key km [C-tab] 'twittering-backward-uri)
+			(define-key km [M-tab] 'twittering-backward-uri)
       (define-key km "\C-c\C-v" 'twittering-view-user-page)
       ;; (define-key km "j" 'next-line)
       ;; (define-key km "k" 'previous-line)
@@ -976,6 +981,30 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
   (let ((uri (get-text-property (point) 'uri)))
     (if uri
 	(browse-url uri))))
+
+(defun twittering-forward-uri ()
+	(interactive)
+	(let* ((next-pos (next-single-property-change (point) 'uri))
+				 (next-uri
+					(if next-pos
+							(if (get-text-property next-pos 'uri) next-pos
+								(next-single-property-change next-pos 'uri))
+						nil)))
+		(if next-uri
+				(goto-char next-uri)
+			(message "No more URIs"))))
+
+(defun twittering-backward-uri ()
+	(interactive)
+	(let* ((prev-pos (previous-single-property-change (point) 'uri))
+				 (prev-uri
+					(if prev-pos
+							(if (get-text-property prev-pos 'uri) prev-pos
+								(previous-single-property-change prev-pos 'uri))
+						nil)))
+		(if prev-uri
+				(goto-char prev-uri)
+			(message "No more URIs"))))
 
 (defun twittering-enter ()
   (interactive)
