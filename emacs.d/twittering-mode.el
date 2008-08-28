@@ -246,6 +246,8 @@
 			(define-key km [tab] 'twittering-forward-uri)
 			(define-key km [C-tab] 'twittering-backward-uri)
 			(define-key km [M-tab] 'twittering-backward-uri)
+			(define-key km "f" 'twittering-forward-uri)
+			(define-key km "b" 'twittering-backward-uri)
       (define-key km "\C-c\C-v" 'twittering-view-user-page)
       ;; (define-key km "j" 'next-line)
       ;; (define-key km "k" 'previous-line)
